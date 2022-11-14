@@ -10,24 +10,24 @@ class DBAdmin {
   static final DBAdmin db = DBAdmin._();
   DBAdmin._();
 
-  chekDatabase() {
+  Future<Database?> chekDatabase()  async{
     if (myDatabase != null) {
       return myDatabase;
     }
 
-    myDatabase = initDatabase();
+    myDatabase = await initDatabase();
     return myDatabase;
   }
 
-  initDatabase() async {
+  Future<Database> initDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = join(directory.path, "TaskDB.db");
-    await openDatabase(
+    return await openDatabase(
       path,
       version: 1,
       onOpen: (db) {},
-      onCreate: (Database dbx, int version) {
-        dbx.execute(
+      onCreate: (Database dbx, int version) async {
+        await dbx.execute(
             "CREATE TABLE task(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, status TEXT)");
       },
     );
